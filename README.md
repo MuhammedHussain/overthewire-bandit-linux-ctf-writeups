@@ -31,6 +31,11 @@ Tips:
  Command:
  cat /var/lib/dpkg/info/bandit7.password
 
+## Here is the LinkedIn link to watch the video:
+https://lnkd.in/p/giaV-JV3
+
+## Resources:
+https://overthewire.org/wargames/bandit/
  
 
 
