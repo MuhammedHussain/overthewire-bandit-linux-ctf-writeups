@@ -1,0 +1,72 @@
+# 🚩 OverTheWire: Bandit CTF Solutions & Notes (Level 6 - 12)
+
+This repository contains my progress, writeups, and key takeaways from the **[OverTheWire: Bandit](https://overthewire.org/wargames/bandit/)** CTF wargame.
+
+---
+
+## 📊 Progress Tracker
+
+| Level Range | Status | Core Concepts & Tools Learned |
+| :--- | :---: | :--- |
+| **Level 0 → 6** | ✅ Completed | Basic CLI, hidden files, human-readable data filtering, file permissions |
+| **Level 7 → 11** | ✅ Completed | Data processing (`grep`, `sort`, `uniq`, `strings`), Base64 decoding, ROT13 cipher (`tr`) |
+| **Level 12** | ✅ Completed | Hexdump reversal (`xxd`), file signature verification (`file`), multi-layer decompression (`gzip`, `bzip2`, `tar`) |
+| **Level 13+** | ⏳ In Progress | SSH private key authentication & network communications |
+
+---
+
+## 🪆 Level Breakdown & Key Learnings
+
+### 🔹 Levels 0 – 6: Fundamentals & Navigation
+* **Key Commands:** `ls`, `cd`, `cat`, `find`, `du`, `file`
+* **Core Takeaways:**
+  * Handling filenames with spaces or dashes (`cat ./-filename`).
+  * Finding files by specific properties (size, user, group, permissions).
+  * Reading hidden files and navigating restricted directory structures.
+
+### 🔹 Levels 7 – 11: Text Manipulation & Encoding
+* **Key Commands:** `grep`, `sort`, `uniq`, `strings`, `base64`, `tr`
+* **Core Takeaways:**
+  * Filtering non-repeated lines using `sort | uniq -u`.
+  * Extracting human-readable text strings from binary dumps.
+  * Decoding Base64 strings directly in CLI (`base64 -d`).
+  * Reversing substitution ciphers with `tr 'A-Za-z' 'N-ZA-Mn-za-m'`.
+
+### 🔹 Level 12: Multi-Layer Decompression (Forensic Unpacking)
+* **Key Commands:** `xxd -r`, `file`, `gzip -d`, `bzip2 -d`, `tar -xf`, `mv`, `cp`
+* **Core Takeaways:**
+  * **Directory Permissions:** Home directory is read-only; active workspaces must be created in `/tmp`.
+  * **Magic Numbers vs. Extensions:** Linux ignores file extensions—`file` inspects internal headers to determine true data types.
+  * **Hexdump Reversal:** Using `xxd -r` to restore raw binary bytes from ASCII hex dumps.
+  * **Recursive Decompression Workflow:**
+    1. `xxd -r data.txt > data1` (Reverse hexdump)
+    2. `file data1` (Check header type)
+    3. Rename with required extension (`.gz` or `.bz2`) and extract (`gzip -d` / `bzip2 -d` / `tar -xf`)
+    4. Repeat on newly generated files until `file` returns `ASCII text`.
+
+---
+
+## Video Reference 
+I have shared the video in my LinkedIn. You can watch the video step by step guide with this link to my post. </br>
+https://www.linkedin.com/posts/muhammedibrahimmuhammedhussain_bandit-cybersecurity-linux-activity-7505004321844092928-wtWJ?utm_source=share&utm_medium=member_desktop&rcm=ACoAAFCWWfYBpAyt_-fjh-E_juMZchRrI5VN5tk
+
+---
+
+## 🧰 Command Cheat Sheet
+
+```bash
+# Workspace setup in restricted environment
+mkdir /tmp/my_workspace && cd /tmp/my_workspace
+cp /home/bandit12/data.txt .
+
+# Revert hex dump to raw binary
+xxd -r data.txt > data1
+
+# Check file type signatures
+file data1
+
+# Decompress by format
+mv data1 data1.gz && gzip -d data1.gz      # Gzip
+mv data1 data1.bz2 && bzip2 -d data1.bz2   # Bzip2
+tar -xf data1                               # Tar archive
+
